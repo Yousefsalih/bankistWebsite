@@ -30,3 +30,11 @@ document.addEventListener('keydown', function (e) {
     closeModal();
   }
 });
+
+const btnScrollTo = document.querySelector('.btn--scroll-to');//Learn more Button in the header
+const section1 = document.querySelector('#section--1');//Scrolling to this section
+
+//Implementing smooth scrolling
+btnScrollTo.addEventListener('click', function(){
+  section1.scrollIntoView({ behavior: 'smooth' });
+})

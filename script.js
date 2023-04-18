@@ -45,15 +45,30 @@ btnScrollTo.addEventListener('click', function(){
 ///////////////////////////////////////
 //Page navigation
 document.querySelector('.nav__links').addEventListener('click', function(e){
-  console.log(e.target); //which is .nav__links is the ul (parent element) and e.target will include it when clicking
-
   //Matching strategy - ignores clicks if it didnt happen on the link (i.e on the ul)
   if (e.target.classList.contains('nav__link')) {
-    // console.log('LINK'); //Shows only links
         e.preventDefault();//removes the default behaviour of scrolling automatically to the section
-        // console.log('LINK');
         const id = e.target.getAttribute('href')
-        // console.log(id);
         document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
 })
+
+//Tabbed Component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content')
+
+tabsContainer.addEventListener('click', function(e){
+  const clicked = e.target.closest('.operations__tab');
+
+  if (!clicked) return;
+
+  //Remove active classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'))//removes active tab except for the first one
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'))//remove content except default
+  clicked.classList.add('operations__tab--active');//adds active tab
+
+  //Activate content area
+  console.log(clicked.dataset.tab);//Shows the number of the tab
+  document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active')
+});

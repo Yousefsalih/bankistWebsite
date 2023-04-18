@@ -13,6 +13,7 @@ const tabs = document.querySelectorAll('.operations__tab');
 const tabsContainer = document.querySelector('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
 const nav = document.querySelector('.nav');
+const header = document.querySelector('.header');
 
 
 ///////////////////////////////////////
@@ -57,6 +58,7 @@ document.querySelector('.nav__links').addEventListener('click', function(e){
   }
 })
 
+///////////////////////////////////////
 //Tabbed Component
 tabsContainer.addEventListener('click', function(e){
   const clicked = e.target.closest('.operations__tab');
@@ -73,6 +75,8 @@ tabsContainer.addEventListener('click', function(e){
   document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active')
 });
 
+
+///////////////////////////////////////
 //Menu fade animation
 const handleHover = function (e) {
   if (e.target.classList.contains('nav__link')) {
@@ -88,3 +92,25 @@ const handleHover = function (e) {
 
 nav.addEventListener('mouseover', handleHover.bind(0.5));
 nav.addEventListener('mouseout', handleHover.bind(1));
+
+
+///////////////////////////////////////
+//Sticky Navigation
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  const [entry] = entries;//entries is the array but since it is only one value, entry is that value. It is the same as writing entries[0]
+  if (!entry.isIntersecting)
+    nav.classList.add('sticky'); //When not intersecting, add sticky class. entry.isIntersecting is equal to false.
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,//Dynamic according to the nav height. If fixed, '-90px' before threshold reached.
+});
+
+headerObserver.observe(header)
+
+

@@ -51,9 +51,8 @@ btnScrollTo.addEventListener('click', function(){
 ///////////////////////////////////////
 //Page navigation
 document.querySelector('.nav__links').addEventListener('click', function(e){
-  //Matching strategy - ignores clicks if it didnt happen on the link (i.e on the ul)
   if (e.target.classList.contains('nav__link')) {
-        e.preventDefault();//removes the default behaviour of scrolling automatically to the section
+        e.preventDefault();
         const id = e.target.getAttribute('href')
         document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
@@ -67,12 +66,12 @@ tabsContainer.addEventListener('click', function(e){
   if (!clicked) return;
 
   //Remove active classes
-  tabs.forEach(t => t.classList.remove('operations__tab--active'))//removes active tab except for the first one
-  tabsContent.forEach(c => c.classList.remove('operations__content--active'))//remove content except default
-  clicked.classList.add('operations__tab--active');//adds active tab
+  tabs.forEach(t => t.classList.remove('operations__tab--active'))
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'))
+  clicked.classList.add('operations__tab--active');
 
   //Activate content area
-  console.log(clicked.dataset.tab);//Shows the number of the tab
+  console.log(clicked.dataset.tab);
   document.querySelector(`.operations__content--${clicked.dataset.tab}`).classList.add('operations__content--active')
 });
 
@@ -100,16 +99,16 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 const navHeight = nav.getBoundingClientRect().height;
 
 const stickyNav = function (entries) {
-  const [entry] = entries;//entries is the array but since it is only one value, entry is that value. It is the same as writing entries[0]
+  const [entry] = entries;
   if (!entry.isIntersecting)
-    nav.classList.add('sticky'); //When not intersecting, add sticky class. entry.isIntersecting is equal to false.
+    nav.classList.add('sticky');
   else nav.classList.remove('sticky');
 };
 
 const headerObserver = new IntersectionObserver(stickyNav, {
   root: null,
   threshold: 0,
-  rootMargin: `-${navHeight}px`,//Dynamic according to the nav height. If fixed, '-90px' before threshold reached.
+  rootMargin: `-${navHeight}px`,
 });
 
 headerObserver.observe(header)
@@ -119,8 +118,6 @@ headerObserver.observe(header)
 
 const revealSection = function(entries, observer) {
   const [entry] = entries;
-  console.log(entry);
-
   if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden');
   observer.unobserve(entry.target)
@@ -135,3 +132,28 @@ allSections.forEach(function(section) {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 })
+
+///////////////////////////////////////
+//Lazy Loading Images
+const imgTargets = document.querySelectorAll('img[data-src')
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries
+
+  if(!entry.isIntersecting) return;
+
+  entry.target.src = entry.target.dataset.src;
+  
+  entry.target.addEventListener('load', function() {
+    entry.target.classList.remove('lazy-img')
+  });
+  observer.unobserve(entry.target)
+};
+
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0.40
+})
+
+imgTargets.forEach(img => imgObserver.observe(img));
